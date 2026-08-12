@@ -29,7 +29,7 @@ spec:
         - name: TefService__BaseUrl
           value: "http://fake-tef-service:5001"
         - name: ConnectionStrings__DefaultConnection
-          value: "Data Source=/app/data/fintech.db;Cache=Shared;"
+          value: "Data Source=/tmp/fintech.db;Cache=Shared;"
         resources:
           requests:
             cpu: "100m"
