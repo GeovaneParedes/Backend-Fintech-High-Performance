@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fake-tef-api
+  namespace: fintech-production
+  labels:
+    app: fake-tef-api
+    tier: pos-simulator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fake-tef-api
+  template:
+    metadata:
+      labels:
+        app: fake-tef-api
+        tier: pos-simulator
+    spec:
+      containers:
+      - name: fake-tef-api
+        image: geovaneparedes/fake-tef-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5001
+        env:
+        - name: ASPNETCORE_URLS
+          value: "http://+:5001"
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fake-tef-service
+  namespace: fintech-production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5001
+    targetPort: 5001
+    protocol: TCP
+  selector:
+    app: fake-tef-api
