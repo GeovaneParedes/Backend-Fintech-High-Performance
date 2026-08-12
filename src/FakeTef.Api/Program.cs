@@ -8,14 +8,14 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.MapGet("/", () => Results.Redirect("/swagger"));
+
 // Simulação de Idempotência em memória do TEF
 var processedIdempotencyKeys = new ConcurrentDictionary<string, (string Status, string AuthCode)>();
 var random = new Random();
 
-app.MapPost("/api/v1/tef/authorize", async (HttpContext context) =>
+app.MapPost("/api/v1/tef/authorize", async (TefAuthorizeRequest request) =>
 {
-    var request = await context.Request.ReadFromJsonAsync<TefAuthorizeRequest>();
-
     // 1. Verificação de Idempotência
     var idempotencyKey = request.IdempotencyKey.ToString();
     if (processedIdempotencyKeys.TryGetValue(idempotencyKey, out var existingResult))
