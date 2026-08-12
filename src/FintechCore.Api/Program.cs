@@ -50,18 +50,18 @@ builder.Services.AddHttpClient<TefIntegrationService>(client =>
 
 // 5. Configurar Swagger / OpenAPI com suporte ao botão Authorize Bearer JWT
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Fintech Core API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
-        Description = "Insira o token JWT gerado na rota /api/v1/login neste formato: Bearer {seu_token}",
-        Name = "Authorization",
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Insira o token JWT neste formato: Bearer {token}",
+        Name = "Authorization",
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
         Scheme = "Bearer"
     });
-    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
     {
         {
             new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -72,7 +72,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            Array.Empty<string>()
+            new string[]{}
         }
     });
 });

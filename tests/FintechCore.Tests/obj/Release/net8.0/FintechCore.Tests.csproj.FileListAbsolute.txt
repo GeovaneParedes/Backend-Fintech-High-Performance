@@ -152,3 +152,7 @@
 /home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/obj/Release/net8.0/FintechCore.Tests.pdb
 /home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/obj/Release/net8.0/FintechCore.Tests.genruntimeconfig.cache
 /home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/obj/Release/net8.0/ref/FintechCore.Tests.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/Microsoft.OpenApi.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll

@@ -76,3 +76,8 @@
 /home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/obj/Release/net8.0/FintechCore.Api.pdb
 /home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/obj/Release/net8.0/FintechCore.Api.genruntimeconfig.cache
 /home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/obj/Release/net8.0/ref/FintechCore.Api.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/obj/Release/net8.0/FintechCore.Api.MvcApplicationPartsAssemblyInfo.cs
+/home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/bin/Release/net8.0/Microsoft.OpenApi.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/bin/Release/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/bin/Release/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/src/FintechCore.Api/bin/Release/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
