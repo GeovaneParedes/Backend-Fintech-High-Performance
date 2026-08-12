@@ -20,7 +20,7 @@ spec:
       containers:
       - name: fake-tef-api
         image: geovaneparedes/fake-tef-api:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5001
         env:
