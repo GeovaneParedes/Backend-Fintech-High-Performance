@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fintech Core - High Performance Dashboard & Resilience Simulator</title>
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --bg-card: #121824;
+      --bg-card-hover: #1a2334;
+      --accent-primary: #6366f1;
+      --accent-secondary: #06b6d4;
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --accent-danger: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(18, 24, 36, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+    }
+
+    /* Navbar Glassmorphism */
+    header {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .brand-title h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(to right, #fff, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p {
+      font-size: 0.75rem;
+      color: var(--accent-secondary);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--accent-success);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-success);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* KPI Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent-primary);
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--glass-border);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .kpi-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .kpi-info h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .kpi-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--accent-secondary);
+    }
+
+    /* Content Layout */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .card-header h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Forms & Inputs */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+    }
+
+    /* Logs Terminal */
+    .terminal-container {
+      background: #06090e;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      height: 250px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .log-line {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .log-time { color: var(--text-muted); }
+    .log-info { color: var(--accent-secondary); }
+    .log-success { color: var(--accent-success); }
+    .log-warn { color: var(--accent-warning); }
+    .log-error { color: var(--accent-danger); }
+
+    /* Table */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th {
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .badge {
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .badge-approved { background: rgba(16, 185, 129, 0.15); color: var(--accent-success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--accent-warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-failed { background: rgba(239, 68, 68, 0.15); color: var(--accent-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo"><i class="fa-solid fa-microchip"></i></div>
+      <div class="brand-title">
+        <h1>Fintech Core High-Performance</h1>
+        <p>Polly v8 Resilience & Low-Allocation Engine</p>
+      </div>
+    </div>
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      <span>API Online (WAL Mode)</span>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <main>
+
+    <!-- KPI Metrics Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <p>Total Transações</p>
+          <h2 id="kpi-total">0</h2>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-receipt"></i></div>
+      </div>
+      <div class="kpi-card" style="border-left-color: var(--accent-success);">
+        <div class="kpi-info">
+          <p>Aprovadas</p>
+          <h2 id="kpi-approved" style="color: var(--accent-success);">0</h2>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-circle-check" style="color: var(--accent-success);"></i></div>
+      </div>
+      <div class="kpi-card" style="border-left-color: var(--accent-warning);">
+        <div class="kpi-info">
+          <p>Outbox (Pending Retry)</p>
+          <h2 id="kpi-pending" style="color: var(--accent-warning);">0</h2>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-warning);"></i></div>
+      </div>
+      <div class="kpi-card" style="border-left-color: var(--accent-secondary);">
+        <div class="kpi-info">
+          <p>Volume Processado</p>
+          <h2 id="kpi-volume">R$ 0,00</h2>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-wallet" style="color: var(--accent-secondary);"></i></div>
+      </div>
+    </div>
+
+    <!-- Simulator Form & Live Metrics Charts -->
+    <div class="grid-2">
+
+      <!-- Interactive API Simulator Form -->
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-bolt" style="color: var(--accent-primary);"></i> Simulador de Transações TEF</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">GC-Friendly DTOs</span>
+        </div>
+
+        <form id="tx-form" onsubmit="handleTransaction(event)">
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Valor (R$)</label>
+              <input type="number" step="0.01" id="tx-amount" class="form-control" value="250.00" required>
+            </div>
+            <div class="form-group">
+              <label>Cartão Mascarado</label>
+              <input type="text" id="tx-card" class="form-control" value="**** **** **** 4321" required>
+            </div>
+          </div>
+
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem;">
+            <div class="form-group">
+              <label>Titular do Cartão</label>
+              <input type="text" id="tx-holder" class="form-control" value="GEOVANE PAREDES" required>
+            </div>
+            <div class="form-group">
+              <label>Validade / CVC</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="tx-exp" class="form-control" value="12/28" style="width: 50%;" required>
+                <input type="text" id="tx-cvc" class="form-control" value="123" style="width: 50%;" required>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+            <button type="submit" class="btn" style="flex: 2;">
+              <i class="fa-solid fa-paper-plane"></i> Enviar Transação (Com Auth JWT)
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="simulateLoadTest()" style="flex: 1;">
+              <i class="fa-solid fa-gauge-high"></i> Load Test (10x)
+            </button>
+          </div>
+        </form>
+
+        <!-- Live Resilience Logs Terminal -->
+        <div style="margin-top: 0.5rem;">
+          <label style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500; margin-bottom: 0.4rem; display: block;">
+            <i class="fa-solid fa-terminal"></i> Console de Resiliência Polly (Real-time Audit Log)
+          </label>
+          <div class="terminal-container" id="terminal-logs">
+            <div class="log-line"><span class="log-time">[00:00:00]</span> <span class="log-info">[System] Dashboard de alta performance inicializado.</span></div>
+            <div class="log-line"><span class="log-time">[00:00:00]</span> <span class="log-info">[Polly] Políticas de Retry (Exponential Backoff + Jitter) prontas.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Performance Metrics Chart -->
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-chart-line" style="color: var(--accent-secondary);"></i> Métrica de Vazão & Latência de Rede</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Tempo de Resposta (ms)</span>
+        </div>
+        <div style="position: relative; height: 320px; width: 100%;">
+          <canvas id="metricsChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recent Transactions Real-Time Audit Table -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-list-check" style="color: var(--accent-success);"></i> Histórico de Processamento Transacional</h3>
+        <button class="btn btn-secondary" onclick="clearTable()" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+          <i class="fa-solid fa-trash"></i> Limpar Tabela
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID da Transação</th>
+              <th>Horário</th>
+              <th>Valor (R$)</th>
+              <th>Status</th>
+              <th>Cód. Autorização</th>
+              <th>Latência</th>
+            </tr>
+          </thead>
+          <tbody id="tx-table-body">
+            <tr>
+              <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                Nenhuma transação processada nesta sessão. Utilize o formulário acima para testar!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>Backend Fintech Core High-Performance • Desenvolvido com .NET 8 Minimal APIs, Dapper & Polly v8</p>
+  </footer>
+
+  <script>
+    // State local do Dashboard
+    let totalTx = 0;
+    let approvedTx = 0;
+    let pendingTx = 0;
+    let totalVolume = 0;
+    let authToken = null;
+
+    // Configuração do Gráfico Chart.js
+    const ctx = document.getElementById('metricsChart').getContext('2d');
+    const metricsChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Latência HTTP (ms)',
+          data: [],
+          borderColor: '#06b6d4',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: '#6366f1'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#94a3b8', font: { family: 'Inter' } } }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+        }
+      }
+    });
+
+    function addLog(message, type = 'info') {
+      const logs = document.getElementById('terminal-logs');
+      const time = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = 'log-line';
+      div.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${message}</span>`;
+      logs.appendChild(div);
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    async function getJwtToken() {
+      if (authToken) return authToken;
+      try {
+        addLog('[Auth] Solicitando Token JWT na rota /api/v1/login...', 'info');
+        const res = await fetch('/api/v1/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: 'admin@fintech.com', password: 'admin123' })
+        });
+        const data = await res.json();
+        authToken = data.accessToken;
+        addLog('[Auth] Token JWT obtido e armazenado em memória com sucesso!', 'success');
+        return authToken;
+      } catch (err) {
+        addLog('[Auth Error] Falha ao autenticar com a API: ' + err.message, 'error');
+        return null;
+      }
+    }
+
+    async function handleTransaction(event) {
+      if (event) event.preventDefault();
+      
+      const token = await getJwtToken();
+      if (!token) return;
+
+      const amount = parseFloat(document.getElementById('tx-amount').value);
+      const card = document.getElementById('tx-card').value;
+      const holder = document.getElementById('tx-holder').value;
+      const exp = document.getElementById('tx-exp').value;
+      const cvc = document.getElementById('tx-cvc').value;
+
+      const startTime = performance.now();
+
+      try {
+        addLog(`[Polly Exec] Enviando requisição R$ ${amount.toFixed(2)} ao TEF...`, 'info');
+
+        const response = await fetch('/api/v1/transactions/process', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            amount: amount,
+            cardNumberMasked: card,
+            cardHolder: holder,
+            expirationDate: exp,
+            cvc: cvc
+          })
+        });
+
+        const endTime = performance.now();
+        const latency = Math.round(endTime - startTime);
+
+        const data = await response.json();
+
+        // Atualizar KPI e Tabela
+        totalTx++;
+        totalVolume += amount;
+        
+        let statusBadge = 'badge-approved';
+        if (data.status === 'APPROVED') {
+          approvedTx++;
+          addLog(`[Polly Success] Transação ${data.transactionId} APROVADA (${latency}ms)! Cód: ${data.authorizationCode}`, 'success');
+        } else if (data.status === 'PENDING_RETRY') {
+          pendingTx++;
+          statusBadge = 'badge-pending';
+          addLog(`[Polly Fallback] Falha de rede TEF! Transação salva em PENDING_RETRY para envio via Background Worker!`, 'warn');
+        } else {
+          statusBadge = 'badge-failed';
+          addLog(`[TEF Response] Transação recusada: ${data.status}`, 'warn');
+        }
+
+        updateDashboard(latency);
+        appendTableRecord(data.transactionId || 'N/A', amount, data.status, data.authorizationCode || 'N/A', latency, statusBadge);
+
+      } catch (err) {
+        addLog(`[Http Error] Falha de comunicação: ${err.message}`, 'error');
+      }
+    }
+
+    function updateDashboard(latency) {
+      document.getElementById('kpi-total').innerText = totalTx;
+      document.getElementById('kpi-approved').innerText = approvedTx;
+      document.getElementById('kpi-pending').innerText = pendingTx;
+      document.getElementById('kpi-volume').innerText = `R$ ${totalVolume.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+      // Atualizar Gráfico de Latência
+      const timeLabel = new Date().toLocaleTimeString();
+      if (metricsChart.data.labels.length > 10) {
+        metricsChart.data.labels.shift();
+        metricsChart.data.datasets[0].data.shift();
+      }
+      metricsChart.data.labels.push(timeLabel);
+      metricsChart.data.datasets[0].data.push(latency);
+      metricsChart.update();
+    }
+
+    function appendTableRecord(id, amount, status, authCode, latency, badgeClass) {
+      const tbody = document.getElementById('tx-table-body');
+      
+      // Remover linha de aviso se vazia
+      if (tbody.children.length === 1 && tbody.children[0].children.length === 1) {
+        tbody.innerHTML = '';
+      }
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><code style="color: var(--accent-secondary);">${id.substring(0, 18)}...</code></td>
+        <td>${new Date().toLocaleTimeString()}</td>
+        <td><strong>R$ ${amount.toFixed(2)}</strong></td>
+        <td><span class="badge ${badgeClass}">${status}</span></td>
+        <td><code>${authCode}</code></td>
+        <td>${latency} ms</td>
+      `;
+
+      tbody.insertBefore(tr, tbody.firstChild);
+    }
+
+    function clearTable() {
+      document.getElementById('tx-table-body').innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+            Tabela limpa. Envie novas transações!
+          </td>
+        </tr>
+      `;
+    }
+
+    async function simulateLoadTest() {
+      addLog('[Load Test] Iniciando disparo de 10 transações em rajada para teste de vazão...', 'warn');
+      for (let i = 0; i < 10; i++) {
+        await handleTransaction(null);
+        await new Promise(r => setTimeout(r, 200));
+      }
+    }
+  </script>
+</body>
+</html>
