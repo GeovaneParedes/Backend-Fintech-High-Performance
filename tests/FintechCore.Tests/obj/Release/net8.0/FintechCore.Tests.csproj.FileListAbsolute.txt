@@ -156,3 +156,4 @@
 /home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/Swashbuckle.AspNetCore.Swagger.dll
 /home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 /home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/home/devgege/Documentos/Backend-Fintech-High-Performance/tests/FintechCore.Tests/bin/Release/net8.0/FintechCore.Api.staticwebassets.runtime.json

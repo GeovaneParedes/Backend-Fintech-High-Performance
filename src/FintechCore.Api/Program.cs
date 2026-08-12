@@ -80,10 +80,11 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.UseAuthentication();
 app.UseAuthorization();
