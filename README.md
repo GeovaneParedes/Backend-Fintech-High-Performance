@@ -4,9 +4,10 @@
 ![NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
 ![Architecture](https://img.shields.io/badge/Architecture-Clean%20%2F%20High--Performance-emerald)
 ![Polly Resilience](https://img.shields.io/badge/Resilience-Polly%20%2B%20Circuit%20Breaker-orange)
-![Database](https://img.shields.io/badge/Database-Dapper%20%2B%20PostgreSQL-336791?logo=postgresql)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-HPA-326CE5?logo=kubernetes)
+![Docker](https://img.shields.io/badge/Docker-Multi--Stage-2496ED?logo=docker)
 
-API Fintech Core resiliente a falhas de comunicação de rede, desenvolvida em C# com **.NET 8 Minimal APIs**, **Dapper**, **System.Text.Json Source Generators** e arquitetura **GC-Friendly** integrada a um simulador TEF/POS resiliente via **Polly v8**.
+API Fintech Core resiliente a falhas de comunicação de rede, desenvolvida em C# com **.NET 8 Minimal APIs**, **Dapper**, **System.Text.Json Source Generators**, **Dashboard de Monitoramento em Tempo Real** e arquitetura **GC-Friendly** integrada a um simulador TEF/POS resiliente via **Polly v8** e **Kubernetes (AWS EKS)**.
 
 ---
 
@@ -19,8 +20,22 @@ API Fintech Core resiliente a falhas de comunicação de rede, desenvolvida em C
   - **Circuit Breaker** automatizado para desarmar requisições em quedas contínuas de canal TEF.
   - **Chave de Idempotência (`Idempotency-Key`):** Garantia de cobrança única em reconexões.
   - **Fallback Async (Outbox / Background Worker):** Transações não finalizadas por perda total de conectividade recebem status `PENDING_RETRY` para reprocessamento em segundo plano via `BackgroundService`.
-- **Acesso a Dados Ultra-Rápido:** SQL puro gerenciado via **Dapper** assíncrono.
-- **Segurança:** Autenticação JWT resiliente com Refresh Tokens e Hashing seguro via `BCrypt`.
+- **Acesso a Dados Ultra-Rápido:** SQL puro gerenciado via **Dapper** assíncrono e SQLite em modo WAL (`journal_mode=WAL`).
+- **Dashboard Sofisticado UI:** Interface responsiva com métricas de vazão, gráfico de latência em tempo real e terminal de audit log das políticas Polly.
+
+---
+
+## 📊 Relatório Executivo de Teste de Carga & Estresse Crítico (Kubernetes)
+
+O projeto foi submetido a testes intensivos de estresse e carga de pico (*Black Friday Simulator*) rodando em um cluster Kubernetes com **100% de taxa de aprovação**:
+
+> 🔗 **[Clique aqui para visualizar o Relatório Completo de Estresse no Kubernetes](relatorio_estresse_critico_k8s.md)**
+
+### 📈 Destaques do Relatório de Pico:
+- **Volume Processado:** **R$ 140.250,00** (561 transações consecutivas)
+- **Taxa de Aprovação:** **100.00% (561 / 561)** com **0 falhas** e **0 perdas de dados**
+- **Vazão Sustentada no Cluster:** **~1.246 requisições por minuto** (20.78 req/s)
+- **Latência Mínima:** **61 ms**
 
 ---
 
@@ -29,7 +44,7 @@ API Fintech Core resiliente a falhas de comunicação de rede, desenvolvida em C
 ```text
 Backend-Fintech-High-Performance/
 ├── src/
-│   ├── FintechCore.Api/            # Servidor B: Minimal API principal (.NET 8)
+│   ├── FintechCore.Api/            # Servidor B: Minimal API principal (.NET 8) + Dashboard UI
 │   └── FakeTef.Api/                # Servidor A: Simulador TEF / POS (Latência & Chaos)
 ├── k8s/                            # Manifestos Kubernetes para AWS EKS (Deployments, HPA & Services)
 │   ├── fintech-core-deployment.yaml
@@ -39,6 +54,7 @@ Backend-Fintech-High-Performance/
 │   └── chaos-monkey.sh
 ├── tests/
 │   └── FintechCore.Tests/          # Testes Unitários e de Integração com xUnit & FluentAssertions
+├── relatorio_estresse_critico_k8s.md # Relatório detalhado de desempenho sob carga de pico no K8s
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                  # GitHub Actions CI/CD Pipeline (Lint, Build & Testes)
@@ -81,22 +97,23 @@ graph TD
 
 ## 🚀 Como Executar Localmente
 
-### Pré-requisitos
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [Docker & Docker Compose](https://www.docker.com/)
-
-### Passo a Passo
+### 1. Via Docker Compose
 ```bash
-# 1. Clonar o repositório
-git clone https://github.com/GeovaneParedes/Backend-Fintech-High-Performance.git
-cd Backend-Fintech-High-Performance
-
-# 2. Subir os serviços via Docker Compose
 docker compose up -d --build
+# Acesse o Dashboard UI: http://localhost:5000/
+# Swagger UI: http://localhost:5000/swagger
+```
 
-# 3. Testar os endpoints
-# Fintech Core API: http://localhost:5000/swagger
-# Fake TEF API: http://localhost:5001/swagger
+### 2. Via Kubernetes (Minikube / Kind)
+```bash
+# 1. Aplicar os manifestos K8s
+kubectl apply -f k8s/fake-tef-deployment.yaml
+kubectl apply -f k8s/fintech-core-deployment.yaml
+kubectl apply -f k8s/fintech-core-hpa.yaml
+
+# 2. Encaminhar a porta do serviço
+kubectl port-forward svc/fintech-core-service 5080:5000 -n fintech-production
+# Acesse o Dashboard UI: http://localhost:5080/
 ```
 
 ---
