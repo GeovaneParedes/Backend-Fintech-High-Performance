@@ -1,9 +1,0 @@
-<Solution>
-  <Folder Name="/src/">
-    <Project Path="src/FakeTef.Api/FakeTef.Api.csproj" />
-    <Project Path="src/FintechCore.Api/FintechCore.Api.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/FintechCore.Tests/FintechCore.Tests.csproj" />
-  </Folder>
-</Solution>
