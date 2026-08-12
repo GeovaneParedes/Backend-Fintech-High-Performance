@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FintechCore.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67ebe0920a390b5bdfe4ffb03230f1ef891bafba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0eff0ac59b623740c51e19718fecf0ad0508f4e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("FintechCore.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FintechCore.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

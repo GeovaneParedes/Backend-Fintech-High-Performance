@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("FintechCore.Api")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("FakeTef.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0eff0ac59b623740c51e19718fecf0ad0508f4e7")]
-[assembly: System.Reflection.AssemblyProductAttribute("FintechCore.Api")]
-[assembly: System.Reflection.AssemblyTitleAttribute("FintechCore.Api")]
+[assembly: System.Reflection.AssemblyProductAttribute("FakeTef.Api")]
+[assembly: System.Reflection.AssemblyTitleAttribute("FakeTef.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.

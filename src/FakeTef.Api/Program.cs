@@ -10,7 +10,6 @@ var random = new Random();
 app.MapPost("/api/v1/tef/authorize", async (HttpContext context) =>
 {
     var request = await context.Request.ReadFromJsonAsync<TefAuthorizeRequest>();
-    if (request == null) return Results.BadRequest();
 
     // 1. Verificação de Idempotência
     var idempotencyKey = request.IdempotencyKey.ToString();
