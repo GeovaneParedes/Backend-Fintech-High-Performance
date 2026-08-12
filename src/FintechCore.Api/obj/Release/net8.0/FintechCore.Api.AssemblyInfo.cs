@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FintechCore.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e06fae6b792aa1c9427c8a736e7cc5cc641914e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+27c512acc4f9f696f29d796c2a4ebc75bdcf342c")]
 [assembly: System.Reflection.AssemblyProductAttribute("FintechCore.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FintechCore.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
