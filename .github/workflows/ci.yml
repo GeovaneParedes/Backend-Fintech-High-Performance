@@ -1,0 +1,29 @@
+name: .NET 8 CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "master", "feature/*" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar .NET 8.0 SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restaurar dependências NuGet
+      run: dotnet restore FintechSolution.sln
+
+    - name: Compilar a solução (.NET 8 Release)
+      run: dotnet build FintechSolution.sln --configuration Release --no-restore
+
+    - name: Executar Testes Unitários e de Resiliência
+      run: dotnet test FintechSolution.sln --configuration Release --no-build --verbosity normal
