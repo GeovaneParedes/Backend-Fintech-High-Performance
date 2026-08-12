@@ -48,7 +48,14 @@ builder.Services.AddHttpClient<TefIntegrationService>(client =>
 .AddPolicyHandler(ResiliencePolicies.GetRetryPolicy())
 .AddPolicyHandler(ResiliencePolicies.GetCircuitBreakerPolicy());
 
+// 5. Configurar Swagger / OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();

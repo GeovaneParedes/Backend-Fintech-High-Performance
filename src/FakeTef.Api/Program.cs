@@ -1,7 +1,12 @@
 using System.Collections.Concurrent;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Simulação de Idempotência em memória do TEF
 var processedIdempotencyKeys = new ConcurrentDictionary<string, (string Status, string AuthCode)>();

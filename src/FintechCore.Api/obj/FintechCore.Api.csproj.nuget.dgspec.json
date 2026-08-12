@@ -72,6 +72,10 @@
             "Polly": {
               "target": "Package",
               "version": "[8.5.2, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.2.3, )"
             }
           },
           "imports": [
