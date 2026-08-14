@@ -1,0 +1,20 @@
+## .NET / C# standard ignore
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+
+## SQLite & Temporary DBs
+*.db
+*.db-shm
+*.db-wal
+/tmp/
+
+## OS generated files
+.DS_Store
+Thumbs.db
